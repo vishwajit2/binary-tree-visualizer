@@ -415,4 +415,112 @@ public class WiredBST<T extends Comparable<T>> implements BSTInterface<T> {
         // invoke the pointer version deletion method with the node which was found:
         return delete(z);
     }
+
+    /**
+     * In-order traversal: traverse the tree in-order. Each node is visited 2 times
+     * at most with constant time for each node, therefore O(n).
+     * 
+     * @param x root of sub-tree to be traversed.
+     */
+    @Override
+    public String inorderTraversal(BSTNode<T> x) {
+        // save title of operation:
+        StringBuilder result = new StringBuilder();
+        result.append(">Inorder traversal: ");
+
+        // if sub-tree is empty, print appropriate message & return:
+        if (x == null) {
+            result.append("The sub-tree which is rooted in given node is empty.");
+            System.out.println(result);
+            return result.toString();
+        }
+
+        // get minimum of x's sub-tree (first element of in-order traversal):
+        x = this.getMinimum(x);
+
+        // scan all nodes from minimum to maximum (most right node);
+        while (x != null) {
+            // visit current node (print\save it's contents):
+            result.append(x.getData().toString() + " --> ");
+
+            // get successor via the O(1) improvement in case right pointer is a thread:
+            x = this.getSuccessor(x);
+        }
+
+        // add terminating string & return results:
+        return result.append("||").toString();
+    }
+
+    /**
+     * Preorder traversal: visit node first, children later. Each node is visited 2
+     * times at most with constant time for each node, therefore O(n).
+     * 
+     * @param x root of sub-tree to be traversed.
+     */
+    @Override
+    public String preorderTraversal(BSTNode<T> x) {
+        // save title of operation:
+        StringBuilder resultBuffer = new StringBuilder();
+        if (x == root)
+            resultBuffer.append(">Preorder traversal: ");
+
+        // if sub-tree is empty, print appropriate message & return:
+        if (x == null)
+            return resultBuffer.append(("The tree is empty.")).toString();
+
+        // visit current node (i.e. print it's contents):
+        resultBuffer.append(x.getData() + " --> ");
+
+        // visit left node only if it's not wired:
+        if (!x.isPointerWired(x.getLeft()))
+            resultBuffer.append(preorderTraversal(x.getLeft()));
+
+        // visit right node only if it's not wired:
+        if (!x.isPointerWired(x.getRight()))
+            resultBuffer.append(preorderTraversal(x.getRight()));
+
+        // add terminating sign for last visited node:
+        if (x == getMaximum(root))
+            resultBuffer.append("||");
+
+        // return result:
+        return resultBuffer.toString();
+    }
+
+    /**
+     * Post order traversal: visit children first, node later. Each node is visited
+     * 2 times at most with constant time for each node, therefore O(n).
+     * 
+     * @param x root of sub-tree to be traversed.
+     */
+    @Override
+    public String postorderTraversal(BSTNode<T> x) {
+        StringBuilder resultBuffer = new StringBuilder();
+
+        // save title of operation:
+        if (x == root)
+            resultBuffer.append(">Post order traversal: ");
+
+        // if sub-tree is empty, print appropriate message & return:
+        if (x == null)
+            return resultBuffer.append("The sub-tree which is rooted in given node is empty.").toString();
+
+        // visit left node only if it's not wired:
+        if (!x.isPointerWired(x.getLeft()))
+            resultBuffer.append(postorderTraversal(x.getLeft()));
+
+        // visit right node only if it's not wired:
+        if (!x.isPointerWired(x.getRight()))
+            resultBuffer.append(postorderTraversal(x.getRight()));
+
+        // visit current node (i.e. print it's contents):
+        resultBuffer.append(x.getData() + " --> ");
+
+        // if this last node, print terminating string:
+        if (x == root)
+            resultBuffer.append("||");
+
+        // return result
+        return resultBuffer.toString();
+    }
 }
