@@ -136,7 +136,7 @@ public class WiredBST<T extends Comparable<T>> implements BSTInterface<T> {
 
         // case 3: unbalanced from bellow - - make median's predecessor new median:
         else if (elementsSmallerThanMedian > elementsLargerThanMedian) {
-            // set the median's predecessor to be the new                                                                // median:
+            // set the median's predecessor to be the new // median:
             median = getPredecessor(median); // this is because our median is lower median
             // update counters according to new median:
             elementsSmallerThanMedian--;
@@ -263,5 +263,156 @@ public class WiredBST<T extends Comparable<T>> implements BSTInterface<T> {
         }
         // if k isn't found (or if the tree is empty) return NIL:
         return null;
+    }
+
+    /**
+     * Delete (pointer version) - delete & return given node.
+     * 
+     * @param z node to be deleted.
+     * @return z node which was deleted, or null if the tree is empty
+     */
+    @Override
+    public BSTNode<T> delete(BSTNode<T> z) {
+        // if the given node for deletion is null, do nothing:
+        if (z == null)
+            return null;
+
+        // Initialize utility pointers for forward processing:
+        BSTNode<T> zParent = z.getParent();
+        BSTNode<T> zLeft = z.getLeft();
+        BSTNode<T> zRight = z.getRight();
+        BSTNode<T> zSuccessor = this.getSuccessor(z);
+        BSTNode<T> zPredecessor = this.getPredecessor(z);
+
+        // Handle case 1: z has two "real" children (NOT wires):
+        if (!(z.isPointerWired(zLeft)) && !(z.isPointerWired(zRight))) {
+            if ((zRight != zSuccessor) && (!zSuccessor.isPointerWired(zSuccessor.getRight()))) {
+                zSuccessor.getRight().setParent(zSuccessor.getParent());
+                zSuccessor.getParent().setLeft(zSuccessor.getRight());
+            }
+
+            zSuccessor.setLeft(z.getLeft());
+            zSuccessor.getLeft().setParent(zSuccessor);
+
+            if (zSuccessor != zRight) {
+                zSuccessor.setRight(zRight);
+                zRight.setParent(zSuccessor);
+            }
+
+            zSuccessor.setParent(zParent);
+            if (zSuccessor.getParent() == null)
+                setRoot(zSuccessor);
+            else if (z == zSuccessor.getParent().getLeft())
+                zSuccessor.getParent().setLeft(zSuccessor);
+            else
+                zSuccessor.getParent().setRight(zSuccessor);
+
+            zPredecessor.setRight(zSuccessor);
+        }
+
+        // Handle case 2: z has a child on right, and a wire on left
+        else if (!z.isPointerWired(zRight) && z.isPointerWired(zLeft)) {// we want to replace z with it's right child:
+
+            // set z'ds parent to be the parent of z'ds child:
+            zRight.setParent(zParent);
+
+            // if z was the root of the tree then make it's child the new root:
+            if (zParent == null)
+                this.setRoot(zRight);
+
+            // if z was a left child, set it's parent left pointer to z'ds child:
+            else if (z == zParent.getLeft())
+                zParent.setLeft(zRight);
+
+            // Similarly, if z was a right child, set it's parent right pointer to z'ds
+            // child:
+            else
+                zParent.setRight(zRight);
+
+            // set z'ds successor left pointer point to z'ds predecessor:
+            zSuccessor.setLeft(zLeft);
+        }
+
+        // Case 3: z has a child on left & a wire on right:
+        else if (!z.isPointerWired(zLeft) && z.isPointerWired(zRight)) {// we want to replace z with it's left child
+
+            // set z'ds parent to be the parent of z'ds child:
+            zLeft.setParent(zParent);
+
+            // if z was the root of the tree then make it's child the new root:
+            if (zParent == null)
+                this.setRoot(zLeft);
+
+            // if z was a left child, set it's parent left pointer to z'ds child:
+            else if (z == zParent.getLeft())
+                zParent.setLeft(zLeft);
+
+            // Similarly, if z was a right child, set it's parent right pointer to z'ds
+            // child:
+            else
+                zParent.setRight(zLeft);
+
+            // set z'ds predecessors right pointer point to z'ds successor:
+            zPredecessor.setRight(zRight);
+        }
+
+        // Handle case 4: z has two "leaves" i.e, both left & right pointers are wires
+        else if (z.isPointerWired(zLeft) && (z.isPointerWired(zRight))) {
+            // if z is the root then make the root NIL
+            if (zParent == null)
+                this.setRoot(null);
+
+            // if z is a left child, set it's parent left pointer to z'ds predecessor:
+            else if (z == zParent.getLeft())
+                zParent.setLeft(zPredecessor);
+
+            // if z is a right child, set it's parent right pointer to z'ds successor:
+            else
+                zParent.setRight(zSuccessor);
+        }
+
+        /* median maintenance */
+        // if we just deleted the median, set a new one according to new balance:
+        if (z == median) {
+            if (elementsLargerThanMedian == elementsSmallerThanMedian) {
+                median = zPredecessor;
+                if (median != null)
+                    elementsSmallerThanMedian--;
+            } else if (elementsLargerThanMedian > elementsSmallerThanMedian) {
+                median = zSuccessor;
+                if (median != null)
+                    elementsLargerThanMedian--;
+            }
+        }
+
+        else // we didn't delete median, update new balance and update median if necessary:
+        {// compare new key to median key and update the appropriate counter accordingly:
+            if (z.getData().compareTo(median.getData()) < 0)
+                elementsSmallerThanMedian--;
+            else if (z.getData().compareTo(median.getData()) > 0)
+                elementsLargerThanMedian--;
+            // update the median if necessary according to the counters updated state:
+            updateMedian();
+        }
+
+        return z; // return node which was deleted
+    }
+
+    /**
+     * Delete (key version) - delete & return node which contains the given data.
+     * This method is an overloaded version of Delete, enabling applications to
+     * invoke deletion directly by a given key, without the need to search for it's
+     * node explicit reference pointer.
+     * 
+     * @param k key(data) to be deleted.
+     * @return z node which was deleted, or null if k does not exist in tree.
+     */
+
+    public BSTNode<T> delete(T k) {
+        // search for a node containing the key k:
+        BSTNode<T> z = search(this.getRoot(), k);
+
+        // invoke the pointer version deletion method with the node which was found:
+        return delete(z);
     }
 }
