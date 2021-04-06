@@ -3,6 +3,11 @@ package wiredBST;
 import binaryTree.BSTInterface;
 import binaryTree.BSTNode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import javax.management.openmbean.KeyAlreadyExistsException;
 
 public class WiredBST<T extends Comparable<T>> implements BSTInterface<T> {
@@ -522,5 +527,197 @@ public class WiredBST<T extends Comparable<T>> implements BSTInterface<T> {
 
         // return result
         return resultBuffer.toString();
+    }
+
+    /**
+     * Get Maximum Height Utility method which recursively calculates max height of
+     * the sub-rooted tree.
+     * 
+     * @param node sub-tree to. For height of entire tree, pass the root node.
+     * @return max height of the sub-tree rooted in the node given in input.
+     */
+    public int getMaxHeight(BSTNode<T> node) {
+        int rightHeight, leftHeight, maxHeight;
+
+        // if this is a true leaf (child of max or minimum node) then return height
+        // zero:
+        if (node == null)
+            return 0;
+
+        // if both children are wires, this is a leaf, return height zero:
+        if (node.isPointerWired(node.getLeft()) && node.isPointerWired(node.getRight()))
+            return 0;
+
+        // if left node is not wired, calculate it's max height:
+        if (!node.isPointerWired(node.getLeft()))
+            leftHeight = getMaxHeight(node.getLeft());
+        else
+            leftHeight = 0;
+
+        // if right node is not wired, calculate it's max height:
+        if (!node.isPointerWired(node.getRight()))
+            rightHeight = getMaxHeight(node.getRight());
+        else
+            rightHeight = 0;
+
+        // determine which sub-tree has max height:
+        maxHeight = (rightHeight >= leftHeight) ? rightHeight : leftHeight;
+
+        // return calculated max height of sub-tree + 1 for current node:
+        return maxHeight + 1;
+    }
+
+    /**
+     * Get Maximum Height Utility method which recursively calculates max height of
+     * the sub-rooted tree.
+     * 
+     * @param node sub-tree to. For height of entire tree, pass the root node.
+     * @return max height of the sub-tree rooted in the node given in input.
+     */
+    public int getMaxWidth(BSTNode<T> node) {
+        int maxWidth = 0;
+        int currentlevelNodeCounter;
+        BSTNode<T> currentNode;
+        BSTNode<T> sentinelNode = new BSTNode<T>(null);
+        Queue<BSTNode<T>> queue = new LinkedList<>();
+        queue.add(this.getRoot());
+        while (!queue.isEmpty()) {
+            currentlevelNodeCounter = 0;
+            queue.add(sentinelNode);
+            currentNode = queue.remove();
+
+            while (currentNode != sentinelNode) {
+                currentlevelNodeCounter++;
+                if (!currentNode.isPointerWired(currentNode.getLeft()))
+                    queue.add(currentNode.getLeft());
+                if (!currentNode.isPointerWired(currentNode.getRight()))
+                    queue.add(currentNode.getRight());
+                currentNode = queue.remove();
+            }
+            if (currentlevelNodeCounter > maxWidth)
+                maxWidth = currentlevelNodeCounter;
+        }
+        return maxWidth;
+    }
+
+    /**
+     * Return string representation of the tree, by scanning it in BFS fashion, top
+     * to bottom and printing each level nodes from left to right.
+     */
+    @Override
+    public String toString() {
+        if (root == null)
+            return "Tree is Empty";
+
+        StringBuilder treeOutputBuffer = new StringBuilder();
+        String title = "\n============================\n";
+        treeOutputBuffer.append(title + "Tree state Printout with BFS" + title);
+        int currentlevel = -1;
+        BSTNode<T> currentNode;
+        BSTNode<T> sentinelNode = new BSTNode<T>(null);
+        Queue<BSTNode<T>> queue = new LinkedList<>();
+        queue.add(root);
+
+        // scan each level in the tree top to bottom:
+        while (!queue.isEmpty()) {
+            currentlevel++;
+            queue.add(sentinelNode); // sentinel to differ between the different levels
+            currentNode = queue.remove();
+            treeOutputBuffer.append(String.format("Level [%d]:    ", currentlevel));
+
+            // scan each node in current level, left to right:
+            while (currentNode != sentinelNode) {
+                // print current nodes details:
+                treeOutputBuffer.append(currentNode.toString() + " ---> ");
+
+                // if pointers are not threads, add children scan queue:
+                if (!currentNode.isPointerWired(currentNode.getLeft()))
+                    queue.add(currentNode.getLeft());
+                if (!currentNode.isPointerWired(currentNode.getRight()))
+                    queue.add(currentNode.getRight());
+
+                // fetch next node:
+                currentNode = queue.remove();
+            }
+            treeOutputBuffer.append("\n");
+        }
+        return treeOutputBuffer.toString();
+    }
+
+    /**
+     * Utility method for test purposes iterating all nodes in tree by any order.
+     * 
+     * @param root node of the tree
+     * @return the tree nodes as a Collection in an ArrayList.
+     */
+    public ArrayList<BSTNode<T>> getNodeList(BSTNode<T> x) {
+        // if sub-tree is empty, print appropriate message & return:
+        if (x == null)
+            return null;
+
+        ArrayList<BSTNode<T>> nodeList = new ArrayList<BSTNode<T>>();
+
+        // get minimum of x's sub-tree (first element of in-order tree walk):
+        x = this.getMinimum(x);
+
+        // scan all nodes from minimum to maximum (most right node);
+        while (x != null) {
+            // visit current node (print\save it's contents):
+            nodeList.add(x);
+
+            // get successor via the O(1) improvement in case right pointer is a thread:
+            x = this.getSuccessor(x);
+        }
+
+        // return result;
+        return nodeList;
+    }
+
+    /**
+     * Utility method for test purposes that convert wired BST to regular one.
+     * 
+     * @return the root node of the standard binary search tree.
+     */
+    public BSTNode<T> getRegularBinarySearchTree() {
+        BSTNode<T> wiredNode, regularNode;
+        T nodeKey;
+
+        // Map wired tree nodes in key:value list:
+        HashMap<T, BSTNode<T>> wiredMappingTable = new HashMap<T, BSTNode<T>>();
+        ArrayList<BSTNode<T>> wiredList = this.getNodeList(root);
+        for (BSTNode<T> node : wiredList)
+            wiredMappingTable.put(node.getData(), node);
+
+        // Create copy of the nodes (only data, no references):
+        ArrayList<BSTNode<T>> regularList = new ArrayList<BSTNode<T>>(wiredList.size());
+        for (BSTNode<T> node : wiredList)
+            regularList.add(new BSTNode<T>(node.getData()));
+
+        // Map regular nodes into key-value table:
+        HashMap<T, BSTNode<T>> regularMappingTable = new HashMap<T, BSTNode<T>>();
+        for (BSTNode<T> node : regularList)
+            regularMappingTable.put(node.getData(), node);
+
+        // map pointer reference according to key:
+        for (int i = 0; i < regularList.size(); i++) {
+            // current regular node:
+            regularNode = regularList.get(i);
+            nodeKey = regularNode.getData();
+
+            // get parallel node from wired tree:
+            wiredNode = wiredMappingTable.get(nodeKey);
+
+            // set relevant reference in regular node according to parallel references:
+            if (wiredNode.getParent() != null)
+                regularNode.setParent(regularMappingTable.get(wiredNode.getParent().getData()));
+            if (!wiredNode.isPointerWired(wiredNode.getLeft()))
+                regularNode.setLeft((regularMappingTable.get(wiredNode.getLeft().getData())));
+            if (!wiredNode.isPointerWired(wiredNode.getRight()))
+                regularNode.setRight((regularMappingTable.get(wiredNode.getRight().getData())));
+        }
+
+        // return root node of regular tree:
+        nodeKey = getRoot().getData();
+        return regularMappingTable.get(nodeKey);
     }
 }
