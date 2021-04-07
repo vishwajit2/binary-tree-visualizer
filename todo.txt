@@ -1,0 +1,5 @@
+1. implement AVL tree
+2. Implement Red Black tree
+3. modify current GUIApplication class for WiredBST to a general GUIApplication class
+4. inherit general GUIApplication class for each type of tree
+5. modify TreePrinter for RedBlack trees 
