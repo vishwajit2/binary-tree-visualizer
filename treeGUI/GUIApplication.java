@@ -34,8 +34,8 @@ import wiredBST.WiredBST;
  * 
  * This class is responsible for 1)supplying a GUI interactive application which
  * supports the wired binary search tree operations & queries. 2)It also
- * supports a print visualization of the existing tree. 3) It is support
- * importing an input file with following commands....
+ * supports a print visualization of the existing tree. 3) It support importing
+ * an input file with following commands....
  * 
  * commands | insert ---> <numeric id> required delete----> <numeric id>
  * required search-----> <numeric id> required minimum maximum median
@@ -115,7 +115,7 @@ public class GUIApplication extends JFrame implements ActionListener {
 	private static Color green1 = new Color(152, 251, 152);// This Intensity in RED-GREEN-BLUE format
 	private static Color green2 = new Color(0, 255, 152);// give RGB colour combination background
 	private static Color green3 = new Color(0, 255, 127);
-	private static Color green4 = new Color(154, 205, 20);
+	private static Color green4 = new Color(102, 255, 102);
 
 	/**
 	 * This class responding for 1) Initialize all GUI components: 2)the wired
@@ -185,7 +185,7 @@ public class GUIApplication extends JFrame implements ActionListener {
 		// for students ID/MIS
 		studentIDLabel = new JLabel("Student's MIS : ");
 		studentIDLabel.setFont(defaultFont);
-		studentIDField = new JTextField("111903124", 10);
+		studentIDField = new JTextField("23", 10);
 		studentIDField.setBackground(new Color(250, 250, 210));// give RGB colour combination background
 		studentIDField.setFont(defaultFont);
 		studentIDField.addActionListener(this);
@@ -194,7 +194,7 @@ public class GUIApplication extends JFrame implements ActionListener {
 		// For student name
 		studentNameLabel = new JLabel("Student Name : "); // (optional panel)
 		studentNameLabel.setFont(defaultFont);
-		studentNameField = new JTextField("COEPIAN", 16);
+		studentNameField = new JTextField("A", 16);
 		studentNameField.setFont(defaultFont);
 		studentNameField.addActionListener(this);
 		studentNameField.setToolTipText("Enter students name :");
@@ -288,7 +288,7 @@ public class GUIApplication extends JFrame implements ActionListener {
 
 		displayWiresCheckBox = new JCheckBox("Display Tree Wires");
 		displayWiresCheckBox.setToolTipText("if this is checked, non null wires displayed in red colour");
-		displayWiresCheckBox.setBackground(Color.YELLOW);
+		// displayWiresCheckBox.setBackground(new Color(153, 204, 255));
 		displayWiresCheckBox.addActionListener(this);
 
 		importFileButton.setBackground(green4);
@@ -314,7 +314,7 @@ public class GUIApplication extends JFrame implements ActionListener {
 		statusBar = new JLabel("COEPIAN:");
 		statusBar.setFont(new Font("Tahoma", Font.BOLD, 17));
 		statusBar.setOpaque(true);
-		statusBar.setBackground(Color.LIGHT_GRAY);
+		// statusBar.setBackground(new Color(250, 250, 210));
 		southPanel.add(statusBar, BorderLayout.SOUTH);
 		statusBar.setBorder(BorderFactory.createLineBorder(Color.black));
 	}

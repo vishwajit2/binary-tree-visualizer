@@ -61,7 +61,7 @@ public class TreePrinter<T extends Comparable<T>> extends JPanel {
 		setFont(defaultFont);
 
 		// Set dimensions of the nodes according to font capacity:
-		nodeDimension = (fontHeight * this.NUM_OF_LINES_IN_EACH_NODE) + 10;
+		nodeDimension = (fontHeight * this.NUM_OF_LINES_IN_EACH_NODE) + 20;
 
 		// Set large enough size to enable scrolling:
 		setPreferredSize(this.getPreferedSize());
@@ -203,7 +203,7 @@ public class TreePrinter<T extends Comparable<T>> extends JPanel {
 		String right = ((node.getRight() != null) ? node.getRight().getData().toString() : "NIL");
 
 		// print node's skeleton (frame):
-		g.drawRoundRect(x, y, nodeDimension, nodeDimension, 45, 45);
+		g.drawRoundRect(x, y, nodeDimension, nodeDimension, 30, 30);
 
 		// set offset for node's data inside the frame:
 		int horizontalOffset = fontHeight / 2 + 1;
