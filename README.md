@@ -24,3 +24,9 @@ Features :-
 3. Queries :- Minimum , Maximum , Medium , Successor , Predecessor.
 
 4. Tree Traversals :- Inorder , Postorder , Preorder.
+
+Instructions to run code :
+
+1. Run the ./run.sh file
+
+2. 
