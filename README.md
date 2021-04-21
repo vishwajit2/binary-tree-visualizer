@@ -23,4 +23,4 @@ Features :-
 
 3. Queries :- Minimum , Maximum , Medium , Successor , Predecessor.
 
-4. Tree Traversals :- Inoredr , Postorder , Preorder.
+4. Tree Traversals :- Inorder , Postorder , Preorder.
