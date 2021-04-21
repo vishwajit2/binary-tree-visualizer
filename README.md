@@ -1,11 +1,11 @@
 # binary-tree-visualizer
 Group Members : 
 
-1 Vidhi Shah :- 111903123
+1. Vidhi Shah :- 111903123
 
-2 Vinaysingh Patil :- 111903124
+2. Vinaysingh Patil :- 111903124
 
-3 Vishwajit Kadam :- 111903128
+3. Vishwajit Kadam :- 111903128
 
 Brief Description :
 
@@ -17,10 +17,10 @@ A binary tree is threaded by making all right child pointers that would normally
 
 Features :-
 
-1 Optional display of the threads in the tree, which could be either displayed (in red) or hidden
+1. Optional display of the threads in the tree, which could be either displayed (in red) or hidden
 
-2 Dictionary Operations :-  Insert , Find , Remove.
+2. Dictionary Operations :-  Insert , Find , Remove.
 
-3 Queries :- Minimum , Maximum , Medium , Successor , Predecessor.
+3. Queries :- Minimum , Maximum , Medium , Successor , Predecessor.
 
-4 Tree Traversals :- Inoredr , Postorder , Preorder.
+4. Tree Traversals :- Inoredr , Postorder , Preorder.
