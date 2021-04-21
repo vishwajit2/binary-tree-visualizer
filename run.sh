@@ -18,4 +18,4 @@ javac -cp ../ TreePrinter.java GUIApplication.java
 #  To execute compiled code, run following commands
 
 # cd ../main
-# javac -cp ../ Main.java
+# java -cp ../ Main.java
