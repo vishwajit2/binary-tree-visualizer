@@ -25,8 +25,8 @@ Features :-
 
 4. Tree Traversals :- Inorder , Postorder , Preorder.
 
-Instructions to run code :
+ To execute compiled code, run following commands
 
-1. Run the ./run.sh file
+ cd ../main
 
-2. 
+java -cp ../ Main.java
